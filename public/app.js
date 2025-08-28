@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messageElement.textContent = `Mensagem atualizada às: ${timestamp}`;
     });
 
-    // Inicialização do Blockly (MOVIDO PARA DENTRO DESTA FUNÇÃO)
+    // Initialize Blockly
     const workspace = Blockly.inject('blocklyDiv', {
         toolbox: '<xml id="toolbox" style="display: none;">' +
             '<category name="Lógica" colour="#5C81A6">' +
