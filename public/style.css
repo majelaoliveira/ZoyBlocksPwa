@@ -41,3 +41,9 @@ footer {
     padding: 10px 0;
     font-size: 0.8em;
 }
+
+#blocklyDiv {
+    height: 480px;
+    width: 600px;
+    margin: 20px auto;
+}
