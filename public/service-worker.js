@@ -1,12 +1,16 @@
-const CACHE_NAME = 'hello-pwa-cache-v2';
+const CACHE_NAME = 'zoyblocks-pwa-cache-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/style.css',
   '/app.js',
   '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/static/img/icon-192.png',
+  '/static/img/icon-512.png',
+  '/static/css/style.css',
+  '/static/css/components/menu_bar.css',
+  '/static/lib/bootstrap/bootstrap.min.css',
+  '/static/lib/blockly/blockly.min.js',
+  '/static/lib/blockly/python_compressed.js'
 ];
 
 self.addEventListener('install', event => {
@@ -23,7 +27,6 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Retorna o recurso do cache se encontrado, caso contrário, busca na rede
         return response || fetch(event.request);
       })
   );
@@ -36,7 +39,6 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheWhitelist.indexOf(cacheName) === -1) {
-            // Remove caches antigos
             return caches.delete(cacheName);
           }
         })

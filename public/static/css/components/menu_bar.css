@@ -1,0 +1,76 @@
+.custom-navbar {
+  background: linear-gradient(90deg, #2b1cd1 0%, #3d2fd9 100%);
+  padding: 0.1rem 1rem; 
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem; /* Base de 16px */
+}
+
+/* Logo menor */
+.logo-img {
+  height: 2.5rem; /* 40px */
+  width: auto;
+  transition: height 0.3s ease;
+}
+
+/* Links do menu */
+.custom-link {
+  color: white !important;
+  font-weight: 400;
+  font-size: 0.9rem; /* 14.4px, um pouco menor */
+  transition: color 0.3s ease;
+}
+
+.custom-link:hover {
+  color: #ffd8ec !important;
+  text-decoration: none;
+}
+
+/* Botões */
+.custom-btn {
+  background: linear-gradient(to right, #CC2277 0%, #FF007B 50%, #CC2277 100%);
+  background-size: 200%;
+  color: white;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem; /* Menor padding */
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem; /* 13.6px */
+  transition: background-position 0.4s ease;
+}
+
+.custom-btn:hover {
+  background-position: right;
+  color: white;
+}
+
+/* Botão de menu hamburguer */
+.navbar-toggler {
+  border: none;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Menu hamburguer para página compactada */
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255,1)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Responsividade para telas pequenas */
+@media (max-width: 767px) {
+  .custom-navbar {
+    padding: 0.1rem 0.75rem;
+    font-size: 0.9rem; /* Reduz fonte */
+  }
+  
+  .logo-img {
+    height: 2.5rem; /* 40px */
+  }
+
+  .custom-link {
+    font-size: 0.8rem; /* 12.8px */
+  }
+
+  .custom-btn {
+    font-size: 0.75rem; /* 12px */
+    margin-bottom: 1rem;
+  }
+}

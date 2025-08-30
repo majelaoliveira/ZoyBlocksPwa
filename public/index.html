@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello PWA com Blockly</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#2196f3">
+
+    <title>ZoyBLocks</title>
+    <link rel="icon" href="static/img/favicon.ico" type="image/x-icon">
+
     <link rel="manifest" href="manifest.json">
     <link rel="shortcut icon" href="icon-192.png" type="image/png">
-    <meta name="theme-color" content="#317EFB"/>
-
-    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
-
+    <meta name="theme-color" content="#317EFB" />
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -24,25 +24,116 @@
             });
         }
     </script>
+    <link href="static/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/components/menu_bar.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <script src="static/lib/blockly/blockly.min.js"></script>
+    <script src="static/lib/blockly/python_compressed.js"></script>
+
+    <style>
+        .terminal-controles {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .terminal-header h6 {
+            margin: 0;
+        }
+    </style>
 </head>
+
 <body>
-    <header>
-        <h1>Meu Primeiro PWA</h1>
-    </header>
-    <main>
-        <p>Olá, mundo PWA de Fortaleza, Ceará, Brasil!</p>
-        <button id="updateButton">Atualizar Mensagem</button>
-        <p id="message"></p>
+    <noscript>
+        <div style="padding: 1rem; background: #ffdddd; color: #900;">
+            Este aplicativo requer JavaScript habilitado para funcionar corretamente.
+        </div>
+    </noscript>
 
-        <div id="blocklyDiv"></div>
-
-        <button id="connectUsbButton">Conectar Dispositivo USB</button>
-        <button id="runCodeButton">Rodar Código</button>
-
-    </main>
-    <footer>
-        <p>&copy; 2025 Meu PWA</p>
-    </footer>
+    <div id="container">
+        <div id="blocklyDiv">
+            <button id="toggleSidebar" class="btn btn-secondary" title="Mostrar/Esconder Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                        d="M8 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8" />
+                </svg>
+            </button>
+        </div>
+        <div id="sidebarLiveMode">
+            <div class="container-fluid">
+                <div id="typeConnect">
+                    <div id="connectUSB">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <button class="btn btn-success w-100 py-3" onclick="executarCodigo()">Executar Código</button>
+                            </div>
+                            <div class="col-6">
+                                <select id="selectPlaca" class="form-select custom_select w-100 py-3" onchange="definirPlaca(this.value)">
+                                    <option value="" disabled selected hidden>Selecione a Placa</option>
+                                    <optgroup label="Zoy">
+                                        <option value="zoySTEAM">ZoySTEAM</option>
+                                    </optgroup>
+                                    <optgroup label="Arduino">
+                                        <option value="arduino_nano">Arduino Nano</option>
+                                        <option value="arduino_uno">Arduino Uno</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <select id="selectPorta" class="form-select custom_select w-100 py-3"></select>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-secondary w-100 py-3" onclick="listarPortas()">Listar Portas</button>
+                            </div>
+                            <div class="col-4">
+                                <select id="selectBaudrate" class="form-select custom_select w-100 py-3"
+                                    onchange="atualizarBaudrate(this.value)">
+                                    <option value="0">9600</option>
+                                    <option value="1">19200</option>
+                                    <option value="2">38400</option>
+                                    <option value="3">57600</option>
+                                    <option value="4" selected>115200</option>
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <button id="btnConectar" class="btn btn-warning w-100 py-3" onclick="toggleConexao()">Conectar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="connectWifi">
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h6 class="text-muted">Terminal Python</h6>
+                    <pre id="codigoPython" onclick="toggleExpand()"># Código Python aparecerá aqui</pre>
+                </div>
+                <div class="mt-3">
+                    <div class="terminal-header">
+                        <h6>Terminal de Comunicação</h6>
+                        <div class="terminal-controles">
+                            <button class="btn btn-sm btn-info" id="abrirTerminalCompletoBtn">Terminal Completo</button>
+                            <button class="btn btn-sm btn-danger" id="limparTerminalBtn">Limpar Terminal</button>
+                        </div>
+                    </div>
+                    <div id="terminal"
+                        style="height: 150px; overflow-y: auto; background: #000; color: #0f0; padding: 5px; font-family: monospace; font-size: 12px; border: 1px solid #ccc;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="static/lib/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="static/js/components/menu_bar.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

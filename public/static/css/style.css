@@ -1,0 +1,162 @@
+html,
+body {
+  margin: 0;
+  height: 100vh;
+  /* altura da tela toda */
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+pre {
+  background: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  height: calc(100% - 110px);
+  margin-top: 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.custom_select {
+  background-color: #e6e6e6;
+  color: black;
+}
+
+#container {
+  flex: 1;
+  /* ocupa todo o espaço restante da navbar */
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+}
+
+#blocklyDiv {
+  flex-grow: 1;
+  background-color: #e0e0e0;
+  width: 70%;
+  height: 100%;
+  position: relative;
+  /* Crucial for positioning #toggleSidebar inside it */
+  overflow: hidden;
+  /* Hide any overflow if blockly content gets too big */
+  padding-left: 0.5rem;
+  transition: width 0.3s ease-in-out;
+  /* Transition blocklyDiv's width */
+}
+
+#sidebarLiveMode {
+  width: 30%;
+  height: 100%;
+  overflow-y: auto;
+  /* Scroll vertical */
+  background: #f8f9fa;
+  padding: 10px;
+  border-left: 1px solid #ccc;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  z-index: 999;
+  transition: transform 0.3s ease-in-out, width 0.3s ease-in-out,
+    padding 0.3s ease-in-out;
+}
+
+#sidebarLiveMode.hidden {
+  transform: translateX(100%);
+  width: 0;
+  border: none;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Quando o menu está oculto, expandir blockly para 100% */
+#blocklyDiv.expanded {
+  width: 100%;
+}
+
+#toggleSidebar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: -1px;
+  z-index: 1000;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  height: 3rem;
+  width: 3rem; /* largura igual à altura para deixar quadrado */
+  cursor: pointer;
+  border-radius: 5px 0 0 5px;
+  transition: transform 0.3s ease-in-out;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+#toggleSidebar:hover {
+  background-color: #5a6268;
+}
+
+#codigoPython {
+  background: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  height: calc(100% - 110px);
+  margin-top: 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 100px;
+  overflow-y: auto;
+  position: relative;
+  cursor: pointer; /* Mostra que é clicável */
+}
+
+#codigoPython.expanded {
+  height: auto;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Adiciona a seta no canto superior direito */
+#codigoPython::after {
+  content: "▼"; /* seta para baixo */
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 14px;
+  color: #666;
+  transition: transform 0.3s ease;
+}
+
+/* Gira a seta para cima quando expandido */
+#codigoPython.expanded::after {
+  content: "▲"; /* seta para cima */
+}
+
+/*
+
+Ajustes Mobile 
+
+*/
+
+@media (max-width: 767px) {
+  .header-hero-content {
+    padding-top: 150px;
+  }
+
+  img.logo-moldura {
+    height: 100px;
+  }
+
+  .navbar {
+    padding: 10px 0;
+  }
+
+  div#listaEventos {
+    min-height: 1707.75px;
+  }
+}
