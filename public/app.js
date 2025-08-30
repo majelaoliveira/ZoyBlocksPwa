@@ -8,8 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
         messageElement.textContent = `Mensagem atualizada às: ${timestamp}`;
     });
 
-    // Variável para armazenar o dispositivo conectado
-    let connectedDevice = null;
+    // Variáveis para a porta serial (novas)
+    let port = null;
+    let writer = null;
     const connectUsbButton = document.getElementById('connectUsbButton');
 
     // === Inicialização do Blockly (ÚNICA E CORRETA) ===
@@ -28,68 +29,67 @@ document.addEventListener('DOMContentLoaded', () => {
             '</xml>'
     });
     
-    // === Lógica do Botão Conectar USB ===
+    // === Lógica do Botão Conectar (AGORA COM WEB SERIAL) ===
     connectUsbButton.addEventListener('click', async () => {
-        if (!('usb' in navigator)) {
-            alert('Seu navegador não suporta a WebUSB API.');
+        // Altera a verificação para a Web Serial API
+        if (!('serial' in navigator)) {
+            alert('Seu navegador não suporta a Web Serial API. Use Chrome ou Edge.');
             return;
         }
+
         try {
-            if (connectedDevice) {
-                await connectedDevice.close();
-                connectedDevice = null;
-                alert('Desconectado com sucesso.');
+            // Lógica de desconexão da Web Serial
+            if (port) {
+                await writer.close();
+                await port.close();
+                port = null;
+                writer = null;
+                alert('Dispositivo desconectado.');
                 return;
             }
-            const device = await navigator.usb.requestDevice({ filters: [] });
-            connectedDevice = device;
-            console.log('Dispositivo USB selecionado:', device);
-            await device.open();
-            if (device.configurations.length > 0) {
-                await device.selectConfiguration(device.configurations[0].configurationValue);
-            }
-            const firstInterface = device.configurations[0].interfaces[0];
-            const firstEndpoint = firstInterface.alternates[0].endpoints[0];
-            await device.claimInterface(firstInterface.interfaceNumber);
-            alert(`Conectado ao dispositivo: ${device.productName || 'Desconhecido'}`);
+            
+            // Solicita e abre a porta serial
+            port = await navigator.serial.requestPort();
+            await port.open({ baudRate: 9600 });
+
+            // Configura o writer para enviar dados
+            const encoder = new TextEncoderStream();
+            encoder.readable.pipeTo(port.writable);
+            writer = encoder.writable.getWriter();
+
+            alert('Conectado ao Arduino via Serial!');
+            console.log('✅ Porta aberta:', port);
+
         } catch (error) {
             console.error('Falha ao conectar:', error);
-            alert(`Falha ao conectar ao dispositivo USB: ${error.message}`);
-            connectedDevice = null;
+            alert(`Falha ao conectar: ${error.message}`);
+            port = null;
+            writer = null;
         }
     });
 
-    // === Função para enviar dados via WebUSB ===
-    async function sendUsbData(data) {
-        if (!connectedDevice) {
-            console.error('Nenhum dispositivo USB conectado.');
-            alert('Por favor, conecte um dispositivo USB primeiro.');
+    // === Função para enviar dados (AGORA COM WEB SERIAL) ===
+    async function sendSerialData(data) {
+        if (!writer) {
+            console.error('Nenhum dispositivo conectado.');
+            alert('Por favor, conecte o Arduino primeiro.');
             return;
         }
         try {
-            const endpoint = connectedDevice.configurations[0].interfaces[0].alternates[0].endpoints.find(ep => ep.direction === 'out' && ep.type === 'bulk');
-            if (!endpoint) {
-                console.error('Nenhum endpoint de saída USB encontrado.');
-                alert('Erro: Endpoint de saída não encontrado.');
-                return;
-            }
-            const dataBuffer = new TextEncoder().encode(data + '\n');
-            const result = await connectedDevice.transferOut(endpoint.endpointNumber, dataBuffer);
-            console.log(`[INFO] Dados enviados com sucesso. Bytes enviados: ${result.bytesWritten}`);
+            // Usa o writer para enviar dados
+            await writer.write(data + '\n');
+            console.log(`[INFO] Dados enviados: ${data}`);
         } catch (error) {
-            console.error('Erro ao enviar dados para o dispositivo USB:', error);
+            console.error('Erro ao enviar dados:', error);
             alert(`Erro ao enviar dados: ${error.message}`);
         }
     }
 
-    // === Lógica do Botão para Rodar o Código ===
+    // === Lógica do Botão para Rodar o Código (AGORA ENVIA SEU COMANDO) ===
     const runCodeButton = document.getElementById('runCodeButton');
     runCodeButton.addEventListener('click', () => {
-        const code = Blockly.JavaScript.workspaceToCode(workspace);
-        if (code) {
-            sendUsbData(code);
-        } else {
-            alert('Nenhum bloco no workspace para rodar.');
-        }
+        // Envia a string exata que o seu firmware está esperando.
+        const command = '<LED_TREZE:3>'; 
+        sendSerialData(command);
     });
 });
