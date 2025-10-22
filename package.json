@@ -17,5 +17,8 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "dependencies": {
+    "express": "^5.1.0"
+  }
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zoyblocks-pwa-cache-v1';
+const CACHE_NAME = 'zoyblocks-pwa-cache-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -10,7 +10,13 @@ const urlsToCache = [
   '/static/css/components/menu_bar.css',
   '/static/lib/bootstrap/bootstrap.min.css',
   '/static/lib/blockly/blockly.min.js',
-  '/static/lib/blockly/python_compressed.js'
+  '/static/lib/blockly/python_compressed.js',
+  // NOVOS ARQUIVOS PARA O JOGO
+  '/zoy_jogos.html',
+  '/zoy_jogos.js',
+  '/zoy_quiz.html',
+  '/zoy_quiz.js'
+
 ];
 
 self.addEventListener('install', event => {
